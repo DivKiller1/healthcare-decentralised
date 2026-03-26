@@ -1,0 +1,18 @@
+# infra/k8s/configmaps/app-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: backend
+data:
+  DATABASE_URL: "postgresql+asyncpg://user:password@postgres-svc:5432/healthcare_db"
+  REDIS_URL: "redis://redis-svc:6379"
+  JWT_ALGORITHM: "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+  REFRESH_TOKEN_EXPIRE_DAYS: "7"
+  AUTH_SERVICE_URL: "http://auth-svc"
+  USER_SERVICE_URL: "http://user-svc"
+  FACILITY_SERVICE_URL: "http://facility-svc"
+  REQUEST_SERVICE_URL: "http://request-svc"
+  ROUTING_SERVICE_URL: "http://routing-svc"
+  AUDIT_SERVICE_URL: "http://audit-svc"

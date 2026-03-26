@@ -1,0 +1,63 @@
+# infra/k8s/ingress/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-ingress
+  namespace: backend
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "healthcare-static-ip"
+    networking.gke.io/managed-certificates: "healthcare-cert"
+    kubernetes.io/ingress.class: "gce"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api/auth(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-svc
+                port:
+                  number: 80
+          - path: /api/users(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: user-svc
+                port:
+                  number: 80
+          - path: /api/facilities(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: facility-svc
+                port:
+                  number: 80
+          - path: /api/requests(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: request-svc
+                port:
+                  number: 80
+          - path: /api/govt(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: govt-ops-svc
+                port:
+                  number: 80
+          - path: /api/metrics(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: metrics-svc
+                port:
+                  number: 80
+          - path: /api/audit(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: audit-svc
+                port:
+                  number: 80

@@ -1,0 +1,25 @@
+# infra/k8s/namespaces/namespaces.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: public
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: govt
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: admin
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring

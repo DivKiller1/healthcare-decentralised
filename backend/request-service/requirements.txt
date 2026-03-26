@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+asyncpg
+pydantic
+pyjwt
+httpx
+redis
+apscheduler
+scikit-learn
+google-cloud-logging
+nest_asyncio
+python-multipart

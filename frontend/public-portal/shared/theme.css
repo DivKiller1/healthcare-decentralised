@@ -1,0 +1,58 @@
+/* frontend/shared/theme.css */
+:root {
+  --primary: hsl(220, 90%, 56%);
+  --primary-glow: hsla(220, 90%, 56%, 0.3);
+  --secondary: hsl(260, 80%, 65%);
+  --accent: hsl(180, 70%, 50%);
+  --background: hsl(225, 25%, 3%);
+  --surface: hsl(225, 25%, 8%);
+  --surface-glass: hsla(225, 25%, 12%, 0.7);
+  --text: hsl(0, 0%, 95%);
+  --text-muted: hsl(225, 10%, 70%);
+  --error: hsl(0, 85%, 60%);
+  --success: hsl(145, 80%, 45%);
+  
+  --glass-border: hsla(0, 0%, 100%, 0.1);
+  --glass-blur: blur(12px);
+  
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  background-color: var(--background);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+.glass-card {
+  background: var(--surface-glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 14px 0 var(--primary-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 var(--primary-glow);
+  opacity: 0.9;
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}

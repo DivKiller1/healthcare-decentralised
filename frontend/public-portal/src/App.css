@@ -1,0 +1,230 @@
+/* frontend/public-portal/src/App.css */
+.app-shell {
+  min-height: 100vh;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  margin-bottom: 40px;
+  position: sticky;
+  top: 20px;
+  z-index: 1000;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.nav-links a:hover {
+  color: var(--text);
+}
+
+.btn-login {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text);
+}
+
+.hero {
+  padding: 100px 0;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  font-weight: 900;
+}
+
+.hero h1 span {
+  color: var(--primary);
+  text-shadow: 0 0 40px var(--primary-glow);
+}
+
+.hero p {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 60px;
+}
+
+.feature-item {
+  padding: 30px;
+  text-align: left;
+  transition: var(--transition-smooth);
+}
+
+.feature-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.feature-item h3 {
+  margin: 20px 0 10px;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  text-align: center;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  background: none;
+  border: none;
+  color: var(--text);
+  width: 100%;
+  outline: none;
+}
+
+.w-full { width: 100%; }
+.p-20 { padding: 40px; }
+.btn-text { background: none; border: none; color: var(--text-muted); margin-top: 15px; cursor: pointer; }
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-header h2 { font-size: 2.5rem; }
+.section-header h2 span { color: var(--primary); }
+
+.map-placeholder {
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  background: #0a0a0c;
+}
+
+.mock-map {
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(var(--glass-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  position: relative;
+}
+
+.marker {
+  position: absolute;
+  color: var(--primary);
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.map-overlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+}
+
+.form-card {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.form-card select {
+  background: none;
+  border: none;
+  color: var(--text);
+  width: 100%;
+  outline: none;
+  cursor: pointer;
+}
+
+.success-card {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+}

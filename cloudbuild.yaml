@@ -1,0 +1,24 @@
+# cloudbuild.yaml
+steps:
+  # Build and Push Backend Services
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/auth-service', './backend/auth-service']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/auth-service']
+
+  # Run Database Migrations (using a temporary Cloud SQL Proxy if needed)
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args: ['run', 'gcr.io/$PROJECT_ID/auth-service', 'alembic', 'upgrade', 'head']
+
+  # Deploy to GKE
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-f'
+      - 'infra/k8s/'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=healthcare-saas-cluster'
+
+images:
+  - 'gcr.io/$PROJECT_ID/auth-service'

@@ -1,0 +1,106 @@
+services:
+  # Infrastructure
+  healthcare-db:
+    image: postgres:15-alpine
+    container_name: healthcare-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: healthcare_db
+    ports: ["5432:5432"]
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    networks: [healthcare-net]
+
+  healthcare-redis:
+    image: redis:alpine
+    container_name: healthcare-redis
+    ports: ["6379:6379"]
+    networks: [healthcare-net]
+
+  # Backend Services
+  auth-service:
+    build: ./backend/auth-service
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      REDIS_URL: "redis://healthcare-redis:6379/0"
+      JWT_SECRET: "supersecretkey"
+    depends_on: [healthcare-db, healthcare-redis]
+    networks: [healthcare-net]
+
+  user-service:
+    build: ./backend/user-service
+    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
+    depends_on: [healthcare-db]
+    networks: [healthcare-net]
+
+  facility-service:
+    build: ./backend/facility-service
+    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
+    depends_on: [healthcare-db]
+    networks: [healthcare-net]
+
+  request-service:
+    build: ./backend/request-service
+    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
+    depends_on: [healthcare-db]
+    networks: [healthcare-net]
+
+  routing-service:
+    build: ./backend/routing-service
+    networks: [healthcare-net]
+
+  govt-ops-service:
+    build: ./backend/govt-ops-service
+    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
+    depends_on: [healthcare-db]
+    networks: [healthcare-net]
+
+  metrics-service:
+    build: ./backend/metrics-service
+    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
+    depends_on: [healthcare-db]
+    networks: [healthcare-net]
+
+  audit-service:
+    build: ./backend/audit-service
+    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
+    depends_on: [healthcare-db]
+    networks: [healthcare-net]
+
+  # Frontend Portals
+  public-portal:
+    build: ./frontend/public-portal
+    networks: [healthcare-net]
+
+  govt-portal:
+    build: ./frontend/govt-portal
+    networks: [healthcare-net]
+
+  admin-portal:
+    build: ./frontend/admin-portal
+    networks: [healthcare-net]
+
+  # API Gateway
+  api-gateway:
+    image: nginx:alpine
+    container_name: api-gateway
+    volumes:
+      - ./infra/local-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - auth-service
+      - user-service
+      - facility-service
+      - request-service
+      - public-portal
+      - govt-portal
+      - admin-portal
+    networks: [healthcare-net]
+
+networks:
+  healthcare-net:
+    driver: bridge
+
+volumes:
+  postgres_data:

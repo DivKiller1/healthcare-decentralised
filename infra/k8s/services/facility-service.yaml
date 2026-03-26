@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: facility-svc
+  namespace: backend
+spec:
+  selector:
+    app: facility
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: ClusterIP

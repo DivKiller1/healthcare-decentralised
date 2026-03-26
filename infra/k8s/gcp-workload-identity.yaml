@@ -1,0 +1,28 @@
+# infra/k8s/gcp-workload-identity.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: healthcare-sa
+  namespace: backend
+  annotations:
+    iam.gke.io/gcp-service-account: healthcare-k8s-sa@your-project-id.iam.gserviceaccount.com
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+  namespace: backend
+spec:
+  template:
+    spec:
+      serviceAccountName: healthcare-sa
+      containers:
+      - name: alembic
+        image: auth-service:latest
+        command: ["alembic", "upgrade", "head"]
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets
+      restartPolicy: Never
