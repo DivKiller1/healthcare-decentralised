@@ -137,7 +137,7 @@ Admin‑only access.
 * name (optional)
 * mobile_number (mandatory)
 * address (optional)
-* role (citizen / clinic / govt_employee / govt_admin / admin)
+* role (citizen / clinic / govt_employee / govt_admin / admin
 * region_id (FK)
 * created_at
 
