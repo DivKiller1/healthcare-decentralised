@@ -38,26 +38,41 @@ const LandingPage = () => (
   </div>
 );
 
+
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const closeMenu = () => setIsOpen(false);
+
   return (
     <nav className="navbar glass-card">
       <div className="nav-brand">
         <HeartPulse size={28} color="var(--primary)" />
         <span>HealthSaaS</span>
       </div>
+
       <div className={`nav-links ${isOpen ? 'open' : ''}`}>
-        <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
-        <Link to="/map" onClick={() => setIsOpen(false)}>Map</Link>
-        <Link to="/request" onClick={() => setIsOpen(false)}>Requests</Link>
-        <Link to="/login" className="btn-login" onClick={() => setIsOpen(false)}><LogIn size={18} /> Login</Link>
+        <Link to="/" onClick={closeMenu}>Home</Link>
+        <Link to="/map" onClick={closeMenu}>Map</Link>
+        <Link to="/request" onClick={closeMenu}>Requests</Link>
+        <Link to="/login" className="btn-login" onClick={closeMenu}>
+          <LogIn size={18} /> Login
+        </Link>
       </div>
-      <button className="nav-toggle" onClick={() => setIsOpen(!isOpen)}>
+
+      <button
+        type="button"
+        className="nav-toggle"
+        aria-label={isOpen ? "Close navigation" : "Open navigation"}
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen(!isOpen)}
+      >
         {isOpen ? <X /> : <Menu />}
       </button>
     </nav>
   );
 };
+
 
 const Auth = () => {
   const [mobile, setMobile] = useState('');
