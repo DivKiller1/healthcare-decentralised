@@ -4,6 +4,7 @@ import uuid
 from typing import Optional, List
 
 from fastapi import FastAPI, HTTPException, Depends, Header, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
@@ -13,6 +14,14 @@ from shared.models import User, Facility, Service, FacilityService
 from shared.utils import log_event
 
 app = FastAPI(title="Facility Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class FacilityCreate(BaseModel):
     name: str

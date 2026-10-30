@@ -5,6 +5,7 @@ import datetime
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
@@ -15,6 +16,15 @@ from shared.models import User, Request as ServiceRequest, Service
 from shared.utils import log_event
 
 app = FastAPI(title="Request Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 scheduler = AsyncIOScheduler()
 
 class RequestCreate(BaseModel):
