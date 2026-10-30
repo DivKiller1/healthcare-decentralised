@@ -706,7 +706,99 @@ Cloud & Backend Engineering Portfolio Project
 
 ---
 
-## 20. Usage Note
+## 20. Development Roadmap (10 Phases)
+
+### Phase 1: Foundation Fix
+- Generate and run Alembic migrations against Postgres
+- Fix service startup bugs (missing imports, missing env vars)
+- Add CORS middleware to all FastAPI services
+- Verify `docker-compose up` boots all 8 services clean
+
+**Deliverable:** All services start, DB tables created, health endpoints reachable.
+
+### Phase 2: Shared Code Consolidation
+- Remove duplicated `shared/` folders from each service
+- Single `backend/shared/` package mounted or installed across services
+- Extract unified auth middleware with role-aware variants
+- Standardize error shapes and token parsing
+
+**Deliverable:** One source of truth for models, DB, auth, and utils.
+
+### Phase 3: Auth + User Flow (End-to-End)
+- Wire public portal login to real auth-service (OTP request + verify)
+- Store tokens properly, wire user-service `/me` to frontend
+- Consolidate citizen-portal into public-portal
+- Add `.env` with `VITE_MAPBOX_TOKEN` and `VITE_API_BASE_URL`
+
+**Deliverable:** Real user can log in via OTP, see profile, token refresh works.
+
+### Phase 4: Facility Discovery (Public Portal)
+- Wire map to facility-service `GET /` endpoint
+- Render real facility markers on Mapbox
+- Add facility detail view and type filters
+- Add blood bank availability feature
+
+**Deliverable:** Citizens see real verified facilities on map with filtering.
+
+### Phase 5: Request Lifecycle (Citizen + Govt)
+- Wire request form to request-service `POST /`
+- Build "My Requests" page hitting `GET /mine`
+- Wire govt dashboard to real summary and map data
+- Wire request close action and verify auto-expiry
+
+**Deliverable:** Full request lifecycle — create, view, close, auto-expire.
+
+> **Note:** Phases 4 and 5 can run in parallel.
+
+### Phase 6: Routing + Route Planning
+- Wire govt portal route planner to `POST /routes`
+- Display optimized route on Mapbox (ordered markers + polyline)
+- Show route history and detail views
+
+**Deliverable:** Govt employee generates optimized visit route, views it on map.
+
+### Phase 7: Admin Portal (Real Data)
+- Wire verification queue to facility-service pending/verify endpoints
+- Wire metrics page to savings, demand, and efficiency endpoints
+- Build audit log viewer
+- Wire demand clustering recalculation
+
+**Deliverable:** Admin approves facilities, views real metrics, browses audit trail.
+
+### Phase 8: Security Hardening
+- Replace hardcoded JWT secret with env-only (fail if missing)
+- Add inter-service auth for internal endpoints
+- Add rate limiting at gateway level
+- Enforce region-restricted visibility and contact validation
+- Add HTTPS/TLS configuration
+
+**Deliverable:** No hardcoded secrets, internal APIs protected, rate limits enforced.
+
+### Phase 9: Infrastructure + CI/CD
+- Add GitHub Actions pipeline (lint, test, build)
+- Add liveness/readiness probes to K8s deployments
+- Create missing K8s service manifests
+- Stub Terraform for AWS and Azure per multi-cloud design
+- Create `docs/architecture.md`, `docs/api-contract.md`, `docs/data-model.md`
+
+**Deliverable:** Push-to-deploy pipeline, complete K8s manifests, documentation.
+
+### Phase 10: Polish + Production Readiness
+- Add pagination to all list endpoints
+- Add error boundaries, loading states, empty states in all portals
+- Write seed script for demo data across all roles
+- Add HPA (Horizontal Pod Autoscaler) configs
+- Full integration test across all 3 portals
+
+**Deliverable:** Demo-ready platform matching full design document scope.
+
+---
+
+**Dependency chain:** `1 → 2 → 3 → (4 ∥ 5) → 6 → 7 → 8 → 9 → 10`
+
+---
+
+## 21. Usage Note
 
 This README is intentionally written to:
 - Be readable by recruiters
