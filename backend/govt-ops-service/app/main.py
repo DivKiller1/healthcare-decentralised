@@ -4,6 +4,7 @@ import uuid
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import httpx
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +14,14 @@ from shared.database import get_db
 from shared.models import User, Request as ServiceRequest, RoutePlan, RoutePlanNode
 
 app = FastAPI(title="Govt Ops Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 ROUTING_SERVICE_URL = os.getenv("ROUTING_SERVICE_URL", "http://routing-svc")
 

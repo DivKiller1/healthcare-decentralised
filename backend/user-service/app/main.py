@@ -3,7 +3,9 @@ import os
 import uuid
 from typing import Optional
 
+import jwt
 from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -12,6 +14,14 @@ from shared.database import get_db
 from shared.models import User
 
 app = FastAPI(title="User Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
@@ -89,5 +99,3 @@ async def list_users(role: Optional[str] = None, region_id: Optional[uuid.UUID] 
     
     result = await db.execute(query)
     return result.scalars().all()
-
-import jwt # type: ignore

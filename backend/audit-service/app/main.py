@@ -5,6 +5,7 @@ import datetime
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Depends, Header, Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -13,6 +14,14 @@ from shared.database import get_db
 from shared.models import AuditLog, User
 
 app = FastAPI(title="Audit Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class LogEntry(BaseModel):
     actor_id: uuid.UUID

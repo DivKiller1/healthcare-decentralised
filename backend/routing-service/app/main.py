@@ -5,6 +5,7 @@ import math
 from typing import List, Dict
 
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -14,6 +15,14 @@ from shared.models import User, Request as ServiceRequest, RoutePlan, RoutePlanN
 from shared.utils import log_event
 
 app = FastAPI(title="Routing Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class RouteGenerateRequest(BaseModel):
     govt_user_id: uuid.UUID

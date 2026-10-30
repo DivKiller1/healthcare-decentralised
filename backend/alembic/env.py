@@ -16,6 +16,13 @@ from shared.models import Region, User, Facility, Service, FacilityService, Requ
 target_metadata = Base.metadata
 
 config = context.config
+
+# Prefer the runtime DATABASE_URL (e.g. inside docker-compose) over the
+# static sqlalchemy.url in alembic.ini, which only points at localhost.
+_database_url = os.getenv("DATABASE_URL")
+if _database_url:
+    config.set_main_option("sqlalchemy.url", _database_url)
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 

@@ -6,6 +6,7 @@ import datetime
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import jwt
 import redis.asyncio as redis
@@ -24,6 +25,14 @@ REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
 app = FastAPI(title="Auth Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Redis connection
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)

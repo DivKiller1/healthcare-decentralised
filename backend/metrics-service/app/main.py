@@ -4,7 +4,8 @@ import uuid
 import datetime
 from typing import Optional, List
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 from sklearn.cluster import KMeans
@@ -16,6 +17,14 @@ from shared.models import User, Request as ServiceRequest, MetricsSnapshot, Audi
 from shared.utils import log_event
 
 app = FastAPI(title="Metrics Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class RecalculateRequest(BaseModel):
     n_clusters: Optional[int] = 5
@@ -34,8 +43,6 @@ async def get_current_admin(authorization: str = Header(...)):
         return payload
     except:
         raise HTTPException(status_code=401, detail="Invalid token")
-
-from fastapi import Header # Re-importing Header for clarity
 
 @app.get("/health")
 def health():

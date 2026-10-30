@@ -10,12 +10,30 @@ services:
     ports: ["5432:5432"]
     volumes: [postgres_data:/var/lib/postgresql/data]
     networks: [healthcare-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d healthcare_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   healthcare-redis:
     image: redis:alpine
     container_name: healthcare-redis
     ports: ["6379:6379"]
     networks: [healthcare-net]
+
+  # Database migrations (one-shot). Runs `alembic upgrade head`, then exits.
+  db-migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.migrate
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+    networks: [healthcare-net]
+    restart: "no"
 
   # Backend Services
   auth-service:
@@ -24,47 +42,102 @@ services:
       DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
       REDIS_URL: "redis://healthcare-redis:6379/0"
       JWT_SECRET: "supersecretkey"
-    depends_on: [healthcare-db, healthcare-redis]
+      AUDIT_SERVICE_URL: "http://audit-service:8000"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      healthcare-redis:
+        condition: service_started
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   user-service:
     build: ./backend/user-service
-    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
-    depends_on: [healthcare-db]
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      JWT_SECRET: "supersecretkey"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   facility-service:
     build: ./backend/facility-service
-    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
-    depends_on: [healthcare-db]
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      JWT_SECRET: "supersecretkey"
+      AUDIT_SERVICE_URL: "http://audit-service:8000"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   request-service:
     build: ./backend/request-service
-    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
-    depends_on: [healthcare-db]
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      JWT_SECRET: "supersecretkey"
+      AUDIT_SERVICE_URL: "http://audit-service:8000"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   routing-service:
     build: ./backend/routing-service
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      AUDIT_SERVICE_URL: "http://audit-service:8000"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   govt-ops-service:
     build: ./backend/govt-ops-service
-    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
-    depends_on: [healthcare-db]
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      JWT_SECRET: "supersecretkey"
+      ROUTING_SERVICE_URL: "http://routing-service:8000"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   metrics-service:
     build: ./backend/metrics-service
-    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
-    depends_on: [healthcare-db]
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      JWT_SECRET: "supersecretkey"
+      AUDIT_SERVICE_URL: "http://audit-service:8000"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   audit-service:
     build: ./backend/audit-service
-    environment: { DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db" }
-    depends_on: [healthcare-db]
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://user:password@healthcare-db:5432/healthcare_db"
+      JWT_SECRET: "supersecretkey"
+    depends_on:
+      healthcare-db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     networks: [healthcare-net]
 
   # Frontend Portals
